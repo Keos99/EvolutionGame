@@ -1,5 +1,6 @@
 package com.evolution.game;
 
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
@@ -9,13 +10,19 @@ public class ConsumableEmitter extends ObjectPool<Consumable> {
     private GameScreen gs;
     private TextureRegion[] regions;
     private float time;
+    private int badFoodChance;
+
+    public void setBadFoodChance(int badFoodChance) {
+        this.badFoodChance = badFoodChance;
+    }
 
     public ConsumableEmitter(GameScreen gs) {
         this.gs = gs;
         this.regions = new TextureRegion[2];
         this.regions[Consumable.Type.FOOD.getTextureIndex()] = Assets.getInstance().getAtlas().findRegion("Food");
         this.regions[Consumable.Type.BAD_FOOD.getTextureIndex()] = Assets.getInstance().getAtlas().findRegion("BadFood");
-        this.generateConsumable(10);
+        this.generateConsumable(500);
+        this.badFoodChance = 10;
     }
 
     @Override
@@ -38,7 +45,7 @@ public class ConsumableEmitter extends ObjectPool<Consumable> {
 
     public void generateConsumable() {
         Consumable.Type type = Consumable.Type.FOOD;
-        if (MathUtils.random(0, 100) < 10) {
+        if (MathUtils.random(0, 100) < badFoodChance) {
             type = Consumable.Type.BAD_FOOD;
         }
         getActiveElement().init(type);

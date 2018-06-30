@@ -1,5 +1,6 @@
 package com.evolution.game;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
@@ -38,13 +39,20 @@ public class Assets {
         assetManager.clear();
     }
 
-    public void loadAssets() {
-        assetManager.load("game.pack", TextureAtlas.class);
-        assetManager.load("music.wav", Music.class);
-        assetManager.load("laser.wav", Sound.class);
-        createStdFont(48);
-        assetManager.finishLoading();
-        atlas = assetManager.get("game.pack", TextureAtlas.class);
+    public void loadAssets(ScreenManager.ScreenType type) {
+        switch (type) {
+            case GAME:
+                assetManager.load("game.pack", TextureAtlas.class);
+                assetManager.load("music.wav", Music.class);
+                assetManager.load("laser.wav", Sound.class);
+                createStdFont(48);
+                break;
+            case MENU:
+                assetManager.load("game.pack", TextureAtlas.class);
+                createStdFont(32);
+                createStdFont(96);
+                break;
+        }
     }
 
     public void createStdFont(int size) {
@@ -61,5 +69,9 @@ public class Assets {
         fontParameter.fontParameters.shadowOffsetY = 2;
         fontParameter.fontParameters.shadowColor = Color.GRAY;
         assetManager.load("gomarice" + size + ".ttf", BitmapFont.class, fontParameter);
+    }
+
+    public void makeLinks() {
+        atlas = assetManager.get("game.pack", TextureAtlas.class);
     }
 }

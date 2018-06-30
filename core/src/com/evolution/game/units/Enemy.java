@@ -1,8 +1,13 @@
 package com.evolution.game.units;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
+
 import com.evolution.game.Assets;
 import com.evolution.game.GameScreen;
+import com.evolution.game.Poolable;
 import com.evolution.game.Rules;
 
 public class Enemy extends Cell {
@@ -28,6 +33,10 @@ public class Enemy extends Cell {
         Cell hero = gs.getHero();
 
         super.update(dt);
+
+        if (scale < 0.2f) {
+            active = false;
+        }
 
         velocity.add(acceleration * (float) Math.cos(Math.toRadians(angle)) * dt, acceleration * (float) Math.sin(Math.toRadians(angle)) * dt);
         if (position.x < 0) {

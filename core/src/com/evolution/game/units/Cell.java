@@ -31,7 +31,7 @@ public abstract class Cell extends GamePoint {
     }
 
     public void grow() {
-        scale += 0.05f;
+        scale += 0.2f;
         if (scale > 5.0f) {
             scale = 5.0f;
         }
@@ -56,6 +56,23 @@ public abstract class Cell extends GamePoint {
             angle -= 360.0f;
         }
         velocity.scl(0.98f);
-        position.mulAdd(velocity, dt);
+
+        float velLen = velocity.len() * dt;
+        tmp.set(velocity);
+        tmp.nor();
+        float nx = tmp.x;
+        float ny = tmp.y;
+        for (int i = 0; i < velLen; i++) {
+            tmp.set(position.x + nx, position.y);
+            if (gs.getMap().isPointEmpty(tmp.x, tmp.y, 24.0f * scale)) {
+                position.set(tmp);
+            }
+            tmp.set(position.x, position.y + ny);
+            if (gs.getMap().isPointEmpty(tmp.x, tmp.y, 24.0f * scale)) {
+                position.set(tmp);
+            }
+        }
+
+
     }
 }
