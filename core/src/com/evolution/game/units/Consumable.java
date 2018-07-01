@@ -25,10 +25,16 @@ public class Consumable extends GamePoint {
     }
 
     private Type type;
-    private TextureRegion[] regions;
+    private transient TextureRegion[] regions;
 
     public Type getType() {
         return type;
+    }
+
+    public void reloadResources(GameScreen gs, TextureRegion[] regions) {
+        this.gs = gs;
+        this.regions = regions;
+        this.texture = regions[type.textureIndex];
     }
 
     public Consumable(GameScreen gs, TextureRegion[] regions) {

@@ -2,6 +2,7 @@ package com.evolution.game;
 
 import com.badlogic.gdx.utils.Pool;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +10,7 @@ import java.util.List;
  * Created by FlameXander on 23.09.2017.
  */
 
-public abstract class ObjectPool<T extends Poolable> {
+public abstract class ObjectPool<T extends Poolable> implements Serializable {
     protected List<T> activeList;
     protected List<T> freeList;
 

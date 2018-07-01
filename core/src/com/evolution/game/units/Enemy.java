@@ -18,6 +18,11 @@ public class Enemy extends Cell {
         this.active = false;
     }
 
+    public void reloadResources(GameScreen gs) {
+        this.gs = gs;
+        this.texture = Assets.getInstance().getAtlas().findRegion("Enemy");
+    }
+
     @Override
     public void consumed() {
         active = false;

@@ -11,30 +11,36 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.evolution.game.Assets;
 import com.evolution.game.GameScreen;
+import com.evolution.game.Joystick;
 import com.evolution.game.Rules;
 
 public class Hero extends Cell {
-    private TextureRegion[] regions;
+    private transient TextureRegion[] regions;
     private float animationTimer;
     private float timePerFrame;
     private StringBuilder guiString;
     private int score;
     private int showedScore;
+    private transient Joystick joystick;
 
     public void addScore(int amount) {
         score += amount;
     }
 
+    public void reloadResources(GameScreen gs, Joystick joystick) {
+        this.gs = gs;
+        this.joystick = joystick;
+        this.regions = new TextureRegion(Assets.getInstance().getAtlas().findRegion("Char")).split(64, 64)[0];
+    }
 
-
-    public Hero(GameScreen gs) {
+    public Hero(GameScreen gs, Joystick joystick) {
         super(640.0f, 360.0f, 300.0f);
         this.gs = gs;
         this.regions = new TextureRegion(Assets.getInstance().getAtlas().findRegion("Char")).split(64, 64)[0];
-//        this.texture = this.regions[0];
         this.timePerFrame = 0.1f;
         this.scale = 1.0f;
         this.guiString = new StringBuilder(200);
+        this.joystick = joystick;
     }
 
     @Override
@@ -66,10 +72,8 @@ public class Hero extends Cell {
                 showedScore = score;
             }
         }
-        if (Gdx.input.isTouched()) {
-            tmp.set(Gdx.input.getX(), Gdx.input.getY());
-            gs.getViewport().unproject(tmp);
-            float angleToTarget = tmp.sub(position).angle();
+        if (joystick.isActive()) {
+            float angleToTarget = joystick.getAngle();
             if (angle > angleToTarget) {
                 if (Math.abs(angle - angleToTarget) <= 180.0f) {
                     angle -= 180.0f * dt;
@@ -84,10 +88,10 @@ public class Hero extends Cell {
                     angle -= 180.0f * dt;
                 }
             }
+            acceleration = joystick.getPower() * 300;
             velocity.add(acceleration * (float) Math.cos(Math.toRadians(angle)) * dt, acceleration * (float) Math.sin(Math.toRadians(angle)) * dt);
         }
-
-        gs.getParticleEmitter().setup(position.x, position.y, MathUtils.random(-10, 10), MathUtils.random(-10, 10), 10.2f, 4, 4f, 0, 1, 0, 0.2f, 0, 1, 0, 0);
+        gs.getParticleEmitter().setup(position.x, position.y, MathUtils.random(-10, 10), MathUtils.random(-10, 10), 0.5f, 5f, 2f, 0.3f, 0.3f, 0, 0.2f, 0.2f, 0.2f, 0, 0);
     }
 
     @Override

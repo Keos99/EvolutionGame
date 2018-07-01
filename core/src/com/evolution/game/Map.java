@@ -3,15 +3,25 @@ package com.evolution.game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 
-public class Map {
-    private GameScreen gs;
-    private TextureRegion grassRegion;
-    private TextureRegion wallRegion;
+import java.io.Serializable;
+
+public class Map implements Serializable {
+    private transient GameScreen gs;
+    private transient TextureRegion grassRegion;
+    private transient TextureRegion wallRegion;
     private byte[][] data;
     private int sizeX, sizeY;
+    private Vector2 tmp;
 
     public static final int CELL_SIZE = 40;
+
+    public void reloadResources(GameScreen gs) {
+        this.gs = gs;
+        this.grassRegion = Assets.getInstance().getAtlas().findRegion("grass");
+        this.wallRegion = Assets.getInstance().getAtlas().findRegion("wall");
+    }
 
     public Map(GameScreen gs) {
         this.gs = gs;
@@ -20,6 +30,7 @@ public class Map {
         this.sizeX = Rules.GLOBAL_WIDTH / CELL_SIZE;
         this.sizeY = Rules.GLOBAL_HEIGHT / CELL_SIZE;
         this.data = new byte[sizeX][sizeY];
+        this.tmp = new Vector2(0, 0);
         for (int i = 0; i < sizeX; i++) {
             for (int j = 0; j < sizeY; j++) {
                 if (MathUtils.random(0, 100) < 2) {
@@ -60,6 +71,25 @@ public class Map {
             }
         }
         return true;
+    }
+
+    public Vector2 checkBlockedPoint(float x, float y, float radius) {
+        for (int i = 0; i < 12; i++) {
+            float tmpX = x + radius * (float) Math.cos(6.28f / 12f * i);
+            float tmpY = y + radius * (float) Math.sin(6.28f / 12f * i);
+            int cellX = (int) (tmpX / CELL_SIZE);
+            int cellY = (int) (tmpY / CELL_SIZE);
+            if (cellX < 0 || cellY < 0 || cellX > sizeX - 1 || cellY > sizeY - 1) {
+                return null;
+            }
+            if (data[cellX][cellY] == 1) {
+                tmp.set(x, y);
+                tmp.sub(cellX * CELL_SIZE + CELL_SIZE / 2, cellY * CELL_SIZE + CELL_SIZE / 2);
+                tmp.nor();
+                return tmp;
+            }
+        }
+        return null;
     }
 
     public void update(float dt) {

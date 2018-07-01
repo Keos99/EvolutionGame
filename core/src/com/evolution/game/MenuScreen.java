@@ -66,6 +66,7 @@ public class MenuScreen implements Screen {
         btnNewGame.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                ScreenManager.getInstance().setLoadFile("save.dat");
                 ScreenManager.getInstance().changeScreen(ScreenManager.ScreenType.GAME);
             }
         });

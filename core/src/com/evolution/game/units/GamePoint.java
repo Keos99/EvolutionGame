@@ -7,9 +7,11 @@ import com.badlogic.gdx.math.Vector2;
 import com.evolution.game.GameScreen;
 import com.evolution.game.Poolable;
 
-public abstract class GamePoint implements Poolable {
-    GameScreen gs;
-    TextureRegion texture;
+import java.io.Serializable;
+
+public abstract class GamePoint implements Poolable, Serializable {
+    transient GameScreen gs;
+    transient TextureRegion texture;
     Vector2 position;
     Vector2 velocity;
     boolean active;

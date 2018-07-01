@@ -10,8 +10,12 @@ import com.badlogic.gdx.math.Vector2;
  * Created by FlameXander on 02.07.2017.
  */
 public class ParticleEmitter extends ObjectPool<Particle> {
-    private TextureRegion oneParticle;
+    private transient TextureRegion oneParticle;
     private Vector2 tmp;
+
+    public void reloadResources() {
+        this.oneParticle = Assets.getInstance().getAtlas().findRegion("star16");
+    }
 
     public ParticleEmitter() {
         this.oneParticle = Assets.getInstance().getAtlas().findRegion("star16");
